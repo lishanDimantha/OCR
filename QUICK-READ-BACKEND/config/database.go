@@ -5,33 +5,39 @@ import (
 	"log"
 	"os"
 
-	// Needed to read environment variables
 	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres" // mysql වෙනුවට postgres භාවිතා කරන්න
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func ConnectDB() {
-	// Load environment variables from .env file (optional in production)
+	// .env ගොනුව තිබේ නම් පමණක් load කරයි
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Warning: .env file not found, using system environment variables")
 	}
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
-	)
+	// Render Dashboard එකෙන් ලබාදෙන DATABASE_URL එක කෙලින්ම භාවිතා කිරීම
+	dsn := os.Getenv("DATABASE_URL")
 
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// DATABASE_URL එක නොමැති නම් පමණක් පරණ ක්‍රමයට (Manual DSN) උත්සාහ කරයි
+	if dsn == "" {
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+			os.Getenv("DB_HOST"),
+			os.Getenv("DB_USER"),
+			os.Getenv("DB_PASSWORD"),
+			os.Getenv("DB_NAME"),
+			os.Getenv("DB_PORT"),
+		)
+	}
+
+	// Postgres driver එක භාවිතා කර සම්බන්ධ වීම
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to Database:", err)
 	}
 
-	fmt.Println("Connected to Database successfully!")
+	fmt.Println("Connected to PostgreSQL Database successfully!")
 }
