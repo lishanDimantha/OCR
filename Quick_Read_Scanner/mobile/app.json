@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Prescription OCR",
+    "slug": "prescription-ocr",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "splash": { "backgroundColor": "#ffffff" },
+    "android": {
+      "adaptiveIcon": { "backgroundColor": "#ffffff" },
+      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE"]
+    },
+    "ios": {
+      "infoPlist": {
+        "NSCameraUsageDescription": "Prescription photo ගැනීමට camera අවශ්‍යයි",
+        "NSPhotoLibraryUsageDescription": "Gallery එකෙන් prescription select කිරීමට"
+      }
+    }
+  }
+}
