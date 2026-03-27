@@ -1,33 +1,34 @@
-FROM golang:1.23-alpine AS builder
+# පළමු පියවර: Go 1.25 භාවිතා කර binary එක build කිරීම
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
-# Copy go mod and sum files
+# Dependency ගොනු කොපි කිරීම
 COPY go.mod go.sum ./
 
-# Download all dependencies
+# Dependencies download කිරීම
 RUN go mod download
 
-# Copy source code
+# සම්පූර්ණ source code එක කොපි කිරීම
 COPY . .
 
-# Build the application
+# Application එක build කිරීම (CGO අක්‍රිය කර නිපදවන නිසා alpine වල හොඳින් වැඩ කරයි)
 RUN CGO_ENABLED=0 GOOS=linux go build -o quick-read-api .
 
-# Start a new stage from scratch
+# දෙවන පියවර: කුඩා image එකක් (Runtime) ලෙස සකස් කිරීම
 FROM alpine:latest  
 
-# Add CA certificates for HTTPS requests (like Stripe/AWS)
+# HTTPS requests සඳහා අවශ්‍ය සහතික එකතු කිරීම
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
 
-# Copy the Pre-built binary file from the previous stage
+# Builder stage එකෙන් binary එක සහ .env ගොනුව පමණක් ලබා ගැනීම
 COPY --from=builder /app/quick-read-api .
 COPY --from=builder /app/.env .
 
-# Expose port 8080 to the outside world
+# Port එක expose කිරීම
 EXPOSE 8080
 
-# Command to run the executable
+# Binary එක run කිරීම
 CMD ["./quick-read-api"]
