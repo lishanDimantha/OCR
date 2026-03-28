@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"your-project-path/config" // ඔබේ config පැකේජය මෙතැනට යොදන්න
+	"github.com/lishanDimantha/OCR/QUICK-READ-BACKEND/config" // ඔබේ config පැකේජය මෙතැනට යොදන්න
 )
 
 func HealthCheck(c *gin.Context) {
