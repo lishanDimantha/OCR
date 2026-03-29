@@ -5,7 +5,8 @@ import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
     Alert,
     ActivityIndicator,
@@ -29,26 +30,24 @@ export default function HomeScreen() {
   const [userName, setUserName] = useState("Patient");
   const [currentDate] = useState("2025.12.01");
 
-  useEffect(
-    useCallback(() => {
+  useEffect(() => {
     const fetchUserName = async () => {
       try {
         const storedName = await AsyncStorage.getItem("fullName");
         if (storedName) {
           setUserName(storedName.split(" ")[0]);
-        } else{
-          //Fallback: fatch from profile API if not in storage
+        } else {
+          // Fallback: fetch from profile API if not in storage
           const token = await AsyncStorage.getItem("userToken");
-            if (token) {
-              const response = await fetch(`${config.apiUrl}/users/profile`, {
-                headers: { "Authorization": `Bearer ${token}` }
-              });
-              const result = await response.json();
-              if (response.ok && result.data?.name) {
-                const name = result.data.name;
-                setUserName(name.split(" ")[0]);
-                await AsyncStorage.setItem("fullName", name);
-              }
+          if (token) {
+            const response = await fetch(`${config.apiUrl}/users/profile`, {
+              headers: { "Authorization": `Bearer ${token}` }
+            });
+            const result = await response.json();
+            if (response.ok && result.data?.name) {
+              const name = result.data.name;
+              setUserName(name.split(" ")[0]);
+              await AsyncStorage.setItem("fullName", name);
             }
           }
         }
@@ -58,8 +57,7 @@ export default function HomeScreen() {
     };
 
     fetchUserName();
-  }, [])
-);
+  }, []);
 
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
