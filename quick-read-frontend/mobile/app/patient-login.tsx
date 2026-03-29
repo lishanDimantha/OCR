@@ -33,12 +33,13 @@ export default function PatientLoginScreen() {
   const [otp, setOtp] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
 
-  // Signup states removed - use dedicated signup screen
-
-  // No longer using isLogin toggle from mode
-
-
-  try {
+  const handleLogin = async () => {
+    if (!emailLogin.trim() || !password.trim()) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
+    setLoading(true);
+    try {
       const response = await fetch(`${config.apiUrl}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -76,8 +77,6 @@ export default function PatientLoginScreen() {
       setLoading(false);
     }
   };
-
-  // handleSignup removed - use dedicated signup screen
 
   const handleVerifyOTP = async () => {
     if (!otp.trim()) {
@@ -147,29 +146,6 @@ export default function PatientLoginScreen() {
           >
             {showOTP ? (
               <>
-                <Text style={styles.cardTitle}>LOGIN</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="User name"
-                  placeholderTextColor="#999"
-                  value={username}
-                  onChangeText={setUsername}
-                  autoCapitalize="none"
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  placeholderTextColor="#999"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                />
-                <TouchableOpacity style={styles.confirmButton} onPress={handleLogin}>
-                  <Text style={styles.confirmButtonText}>Confirm</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
                 <Text style={styles.cardTitle}>VERIFY OTP</Text>
                 <Text style={{color: '#fff', marginBottom: 10, textAlign: 'center'}}>Enter the code sent to {pendingEmail}</Text>
                 <TextInput
@@ -184,7 +160,7 @@ export default function PatientLoginScreen() {
                   {loading ? <ActivityIndicator color="rgba(26, 26, 158, 1)" /> : <Text style={styles.confirmButtonText}>Verify</Text>}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setShowOTP(false)} style={{marginTop: 15}}>
-                  <Text style={{color: '#fff', textDecorationLine: 'underline'}}>Back to Signup</Text>
+                  <Text style={{color: '#fff', textDecorationLine: 'underline'}}>Back to Login</Text>
                 </TouchableOpacity>
               </>
             ) : (
