@@ -146,7 +146,7 @@ export const Assets = {
   icons: {
     patient: require("@/assets/icons/patient.png") as number,
     pharmacy: require("@/assets/icons/pharmacy.png") as number,
-    delivery: require("@/assets/icons/delivey.png") as number,
+    delivery: require("@/assets/icons/delivery.png") as number,
   },
 };
 

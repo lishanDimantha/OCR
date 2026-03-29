@@ -222,7 +222,7 @@ export default function HomeScreen() {
                   onPress={() => router.push("/pharmacy-delivery")}
                 >
                   <Image
-                    source={require("@/assets/icons/delivey.png")}
+                    source={require("@/assets/icons/delivery.png")}
                     style={{ width: 24, height: 24, tintColor: "#1E0A60" }}
                     resizeMode="contain"
                   />
